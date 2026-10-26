@@ -1,3 +1,4 @@
+
 # Cascade
 
 **Know which business features break when a service fails, how badly, and who owns them.**
@@ -11,6 +12,8 @@ meaning on top of the observability stack you already run, and keeps it honest a
 - When something fails it computes the **blast radius per feature**: "Checkout (P0) is Down because of `cart`, owned by payments-team".
 - It **verifies declarations against reality** (`cascade verify`) so the registry doesn't rot.
 - It serves a **support-facing UI**, a **Prometheus `/metrics` endpoint** for alerting, and a **JSON API**.
+
+<img width="1710" height="900" alt="Screenshot 2026-10-27 at 12 51 35 AM" src="https://github.com/user-attachments/assets/64162501-9565-44a2-9302-acbd31fdf00f" />
 
 > Status: working prototype, tested against the OpenTelemetry Demo only. See [Known limitations](#known-limitations)
 > and the [TODO](#todo--roadmap) before using it for anything that matters.
