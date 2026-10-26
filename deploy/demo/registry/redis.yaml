@@ -1,0 +1,3 @@
+service: redis
+owner: platform-team
+kind: cache

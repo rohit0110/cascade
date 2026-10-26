@@ -1,0 +1,3 @@
+service: flagd
+owner: platform-team
+kind: config

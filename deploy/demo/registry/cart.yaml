@@ -1,0 +1,13 @@
+service: cart
+owner: shopping-team
+features:
+  - id: shopping-cart
+    name: Shopping cart storage
+    tier: P1
+    entrypoints: ["oteldemo.CartService/AddItem"]
+    depends_on:
+      - { service: redis, kind: hard }
+    metrics:
+      - { name: "add-to-cart p95", unit: "ms", query: 'histogram_quantile(0.95, sum by (le) (rate(demo_cart_add_item_latency_seconds_bucket[5m]))) * 1000' }
+depends_on:
+  - { service: flagd, kind: soft }

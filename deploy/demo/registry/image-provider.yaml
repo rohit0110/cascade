@@ -1,0 +1,7 @@
+service: image-provider
+owner: web-team
+features:
+  - id: product-images
+    name: Product images
+    tier: P2
+    entrypoints: ["GET /images/*"]

@@ -1,0 +1,17 @@
+service: checkout
+owner: payments-team
+features:
+  - id: checkout
+    name: Checkout
+    tier: P0
+    entrypoints: ["oteldemo.CheckoutService/PlaceOrder"]
+    depends_on:
+      - { service: cart, kind: hard }
+      - { service: payment, api: "oteldemo.PaymentService/Charge", kind: hard }
+      - { service: shipping, kind: hard }
+      - { service: currency, kind: hard }
+      - { service: product-catalog, kind: hard }
+      - { service: email, kind: soft }
+    metrics:
+      - { name: "orders placed", unit: "/min", query: 'sum(rate(traces_span_metrics_calls_total{service_name="checkout",span_name="oteldemo.CheckoutService/PlaceOrder",span_kind="SPAN_KIND_SERVER",status_code!="STATUS_CODE_ERROR"}[5m])) * 60' }
+      - { name: "orders failed", unit: "/min", query: '(sum(rate(traces_span_metrics_calls_total{service_name="checkout",span_name="oteldemo.CheckoutService/PlaceOrder",span_kind="SPAN_KIND_SERVER",status_code="STATUS_CODE_ERROR"}[5m])) or vector(0)) * 60' }

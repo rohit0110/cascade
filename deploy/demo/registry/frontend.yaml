@@ -1,0 +1,25 @@
+service: frontend
+owner: web-team
+features:
+  - id: browse-catalog
+    name: Browse products
+    tier: P1
+    entrypoints: ["GET /api/products"]
+    depends_on:
+      - { service: product-catalog, kind: hard }
+      - { service: currency, kind: hard }
+      - { service: recommendation, kind: soft }
+      - { service: ad, kind: soft }
+  - id: cart-view
+    name: View and edit cart
+    tier: P1
+    entrypoints: ["GET /api/cart"]
+    depends_on:
+      - { service: cart, kind: hard }
+  - id: place-order
+    name: Place order
+    tier: P0
+    entrypoints: ["POST /api/checkout"]
+    depends_on:
+      - { service: checkout, api: "oteldemo.CheckoutService/PlaceOrder", kind: hard }
+      - { service: shipping, kind: hard }

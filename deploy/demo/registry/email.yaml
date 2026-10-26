@@ -1,0 +1,9 @@
+service: email
+owner: growth-team
+features:
+  - id: order-confirmation-email
+    name: Order confirmation email
+    tier: P2
+    entrypoints: ["POST /send_order_confirmation"]
+    metrics:
+      - { name: "confirmations sent", unit: "/min", query: 'sum(rate(demo_notification_confirmations_total[5m])) * 60' }

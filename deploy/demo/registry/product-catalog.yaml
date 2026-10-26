@@ -1,0 +1,11 @@
+service: product-catalog
+owner: catalog-team
+depends_on:
+  - { service: astronomy-db, kind: hard }
+features:
+  - id: product-catalog
+    name: Product catalog
+    tier: P1
+    entrypoints: ["oteldemo.ProductCatalogService/ListProducts"]
+    metrics:
+      - { name: "product lookups", unit: "/min", query: 'sum(rate(traces_span_metrics_calls_total{service_name="product-catalog",span_name=~".*GetProduct",span_kind="SPAN_KIND_SERVER"}[5m])) * 60' }

@@ -1,0 +1,11 @@
+service: ad
+owner: growth-team
+features:
+  - id: ads
+    name: Contextual ads
+    tier: P3
+    entrypoints: ["oteldemo.AdService/GetAds"]
+    metrics:
+      - { name: "ad requests", unit: "/min", query: 'sum(rate(demo_ad_requests_total[5m])) * 60' }
+depends_on:
+  - { service: flagd, kind: soft }

@@ -1,0 +1,3 @@
+service: astronomy-db
+owner: platform-team
+kind: database

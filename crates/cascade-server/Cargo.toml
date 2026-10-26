@@ -1,0 +1,35 @@
+[package]
+name = "cascade-server"
+description = "Cascade server: poller, impact engine, REST/SSE API, metrics, embedded UI"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "cascade_server"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cascade-server"
+path = "src/main.rs"
+
+[dependencies]
+cascade-core.workspace = true
+cascade-registry.workspace = true
+cascade-adapters.workspace = true
+anyhow.workspace = true
+async-trait.workspace = true
+axum.workspace = true
+clap.workspace = true
+rust-embed.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tokio-stream.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+serde_yaml.workspace = true
+http-body-util.workspace = true
+tower.workspace = true

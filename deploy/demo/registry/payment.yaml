@@ -1,0 +1,11 @@
+service: payment
+owner: payments-team
+features:
+  - id: payment-processing
+    name: Card payment processing
+    tier: P0
+    entrypoints: ["oteldemo.PaymentService/Charge"]
+    metrics:
+      - { name: "transactions", unit: "/min", query: 'sum(rate(demo_payment_transactions_total[5m])) * 60' }
+depends_on:
+  - { service: flagd, kind: soft }

@@ -1,0 +1,13 @@
+{
+  "type": "datasource",
+  "name": "Cascade",
+  "id": "cascade-impact-datasource",
+  "metrics": true,
+  "info": {
+    "description": "Business impact (features, tiers, owners) from a Cascade server, as Node Graph and table frames.",
+    "author": { "name": "Cascade" },
+    "version": "0.1.0",
+    "logos": { "small": "img/logo.svg", "large": "img/logo.svg" }
+  },
+  "dependencies": { "grafanaDependency": ">=10.0.0", "plugins": [] }
+}

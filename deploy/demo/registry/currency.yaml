@@ -1,0 +1,9 @@
+service: currency
+owner: payments-team
+features:
+  - id: currency-conversion
+    name: Currency conversion
+    tier: P1
+    entrypoints: ["oteldemo.CurrencyService/Convert"]
+    metrics:
+      - { name: "conversions", unit: "/min", query: 'sum(rate(demo_exchange_conversions_counter_total[5m])) * 60' }

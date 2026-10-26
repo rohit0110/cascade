@@ -1,0 +1,12 @@
+[package]
+name = "cascade-registry"
+description = "cascade.yaml schema, loader, validation and declared-vs-observed drift check"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+cascade-core.workspace = true
+serde.workspace = true
+serde_yaml.workspace = true
+thiserror.workspace = true

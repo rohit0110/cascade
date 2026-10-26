@@ -1,0 +1,10 @@
+[package]
+name = "cascade-core"
+description = "Domain types, dependency graph, impact propagation and health hysteresis for Cascade"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+petgraph.workspace = true
+serde.workspace = true

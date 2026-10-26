@@ -1,0 +1,20 @@
+[package]
+name = "cascade-cli"
+description = "cascade CLI: verify declarations against telemetry, bootstrap cascade.yaml, simulate outages"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "cascade"
+path = "src/main.rs"
+
+[dependencies]
+cascade-core.workspace = true
+cascade-registry.workspace = true
+cascade-adapters.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+tokio.workspace = true

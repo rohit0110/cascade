@@ -1,0 +1,47 @@
+# Slim collector for the Cascade demo: OTLP in, spanmetrics + servicegraph connectors,
+# traces to Jaeger, metrics to Prometheus. No host/docker receivers (no hostfs, no docker.sock).
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins: ["http://*", "https://*"]
+          allowed_headers: ["content-type", "traceparent", "baggage"]
+
+processors:
+  memory_limiter:
+    check_interval: 5s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+  batch: {}
+
+connectors:
+  spanmetrics: {}
+  servicegraph:
+    latency_histogram_buckets: [100ms, 250ms, 1s, 5s]
+    store:
+      ttl: 5s
+      max_items: 10000
+    metrics_flush_interval: 10s
+
+exporters:
+  otlp_grpc/jaeger:
+    endpoint: jaeger:4317
+    tls: {insecure: true}
+  otlp_http/prometheus:
+    endpoint: http://prometheus:9090/api/v1/otlp
+    tls: {insecure: true}
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp_grpc/jaeger, spanmetrics, servicegraph]
+    metrics:
+      receivers: [otlp, spanmetrics, servicegraph]
+      processors: [memory_limiter, batch]
+      exporters: [otlp_http/prometheus]

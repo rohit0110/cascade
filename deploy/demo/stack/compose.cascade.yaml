@@ -1,0 +1,81 @@
+# Overlay: minimal OTel Demo for Cascade. Usage (from this dir):
+#   docker compose -p cascade-demo -f compose.yaml -f compose.observability.yaml -f compose.cascade.yaml up -d
+# Drops opensearch/opamp, and replaces the collector's host-root + docker.sock mounts.
+services:
+  opensearch:
+    profiles: [disabled]
+  opamp-server:
+    profiles: [disabled]
+  otel-collector:
+    command: ["--config=/etc/cascade-collector.yml"]
+    user: !reset null
+    volumes: !override
+      - ./cascade-collector.yml:/etc/cascade-collector.yml:ro
+    environment: !override
+      - GOMEMLIMIT=160MiB
+    depends_on: !override
+      jaeger:
+        condition: service_started
+  grafana:
+    environment: !override
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+  cart:
+    depends_on: !override
+      valkey-cart:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+      flagd:
+        condition: service_started
+  product-catalog:
+    depends_on: !override
+      otel-collector:
+        condition: service_started
+      flagd:
+        condition: service_started
+  frontend-proxy:
+    depends_on: !override
+      frontend:
+        condition: service_healthy
+      load-generator:
+        condition: service_started
+      flagd-ui:
+        condition: service_healthy
+      telemetry-docs:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+      grafana:
+        condition: service_started
+
+  # Cascade itself. Build context is the repo root (stack/ is three levels below it).
+  cascade:
+    build:
+      context: ../../..
+      dockerfile: deploy/Dockerfile
+    image: cascade:local
+    container_name: cascade
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    environment:
+      CASCADE_PROMETHEUS: http://prometheus:9090
+      CASCADE_REGISTRY: /registry
+      # Non-business actors and telemetry artifacts.
+      CASCADE_IGNORE: unknown,user,frontend-web,load-generator
+      CASCADE_POLL_SECS: "10"
+      CASCADE_WINDOW: 1m
+      CASCADE_RAISE_AFTER: "2"
+      CASCADE_CLEAR_AFTER: "3"
+    volumes:
+      - ../registry:/registry:ro
+    ports:
+      - "127.0.0.1:7070:7070"
+    depends_on:
+      prometheus:
+        condition: service_started

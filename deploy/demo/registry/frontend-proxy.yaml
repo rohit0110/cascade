@@ -1,0 +1,15 @@
+service: frontend-proxy
+owner: platform-team
+kind: gateway
+features:
+  - id: storefront-entry
+    name: Storefront entry (edge proxy)
+    tier: P0
+    entrypoints: ["GET /"]
+    depends_on:
+      - { service: frontend, api: "*", kind: hard }   # the frontend being reachable, not any one of its features
+      - { service: image-provider, kind: soft }
+      - { service: flagd, kind: soft }
+      - { service: flagd-ui, kind: soft }
+    metrics:
+      - { name: "storefront requests", unit: "/min", query: 'sum(rate(traces_span_metrics_calls_total{service_name="frontend-proxy",span_kind="SPAN_KIND_SERVER"}[5m])) * 60' }

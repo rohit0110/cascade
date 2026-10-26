@@ -1,0 +1,13 @@
+service: recommendation
+owner: ml-team
+features:
+  - id: recommendations
+    name: Product recommendations
+    tier: P2
+    entrypoints: ["oteldemo.RecommendationService/ListRecommendations"]
+    depends_on:
+      - { service: product-catalog, kind: hard }
+    metrics:
+      - { name: "recommendation requests", unit: "/min", query: 'sum(rate(demo_recommendation_requests_total[5m])) * 60' }
+depends_on:
+  - { service: flagd, kind: soft }

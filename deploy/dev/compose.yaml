@@ -1,0 +1,45 @@
+# Hardened dev toolchains. Nothing is installed on the host.
+# Usage: docker compose -f deploy/dev/compose.yaml run --rm rust cargo test
+# Only the project directory is mounted. No Docker socket, no home dir, no creds.
+# TODO: pin images by digest (scripts/pin-digests.sh) after first pull.
+
+x-hardened: &hardened
+  user: "1000:1000"
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  read_only: true
+  tmpfs: ["/tmp:rw,exec,size=1g"]
+  pids_limit: 512
+  working_dir: /work
+  volumes:
+    - ../..:/work
+  networks: [dev]
+
+services:
+  rust:
+    <<: *hardened
+    image: rust:1-bookworm
+    environment:
+      CARGO_HOME: /cache/cargo
+      CARGO_TARGET_DIR: /cache/target
+    volumes:
+      - ../..:/work
+      - cargo-cache:/cache
+
+  node:
+    <<: *hardened
+    image: node:22-bookworm-slim
+    environment:
+      npm_config_ignore_scripts: "true"
+      npm_config_cache: /cache/npm
+    volumes:
+      - ../..:/work
+      - npm-cache:/cache
+
+networks:
+  dev:
+    internal: false   # builds need registry access; run tests with --network none where possible
+
+volumes:
+  cargo-cache:
+  npm-cache:

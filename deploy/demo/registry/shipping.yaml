@@ -1,0 +1,11 @@
+service: shipping
+owner: logistics-team
+features:
+  - id: shipping-quote
+    name: Shipping quotes
+    tier: P1
+    entrypoints: ["oteldemo.ShippingService/GetQuote"]
+    depends_on:
+      - { service: quote, kind: hard }
+    metrics:
+      - { name: "items shipped", unit: "/min", query: 'sum(rate(demo_shipping_items_shipped_total[5m])) * 60' }
